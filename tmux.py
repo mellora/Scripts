@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+'''
+    This script was created to automate starting programs/scripts within a
+    tmux session.  Needs at least one dictionary defined in the windows
+    dictionary to work.  Subdictionaries need to have 2 key value pairs, the
+    name and command keys.
+'''
+# Standard Imports
 from subprocess import call, PIPE, Popen
 
 session = 'TEST'
