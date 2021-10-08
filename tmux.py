@@ -2,10 +2,16 @@
 from subprocess import call, PIPE, Popen
 
 session = 'TEST'
-window_01 = 'test_bash'
-window_01_command = ''
-window_02 = 'HTOP'
-window_02_command = 'htop'
+windows = {
+    'window_1': {
+        'name': 'test_bash',
+        'command': 'ls'
+    },
+    'window_2': {
+        'name': 'HTOP',
+        'command': 'htop'
+    }
+}
 
 if __name__ == '__main__':
     # Check if Session Exists
@@ -24,16 +30,56 @@ if __name__ == '__main__':
     # gets the item at the first index, and strips the colon off of it.
     output_first_args = []
     for line_slice in output_slice_rows:
-        output_first_args.append(line_slice.split(' ')[0].replace(':', ''))
+        output_first_args.append(
+            line_slice.split(' ')[0].replace(':', '')
+        )
 
     # Checks to see if the session currently exists.
     # If it does not, then run code block.
     if session not in output_first_args:
         # Start new Session with specified name
-        call(['tmux', 'new-session', '-d', '-s', session])
+        call([
+            'tmux',
+            'new-session',
+            '-d',
+            '-s',
+            session]
+        )
+        window_1 = windows.pop('window_1')
         # Rename default first window
-        call(['tmux', 'rename-window', '-t', '0', window_01])
-        # Create second window in session
-        call(['tmux', 'new-window', '-t', session, '-n', window_02])
-        # Start htop in session window
-        call(['tmux', 'send-keys', '-t', window_02, window_02_command, 'C-m'])
+        call([
+            'tmux',
+            'rename-window',
+            '-t',
+            '0',
+            window_1['name']
+        ])
+        call([
+            'tmux',
+            'send-keys',
+            '-t',
+            window_1['name'],
+            window_1['command'],
+            'C-m'
+        ])
+        # Loop through the rest of the windows
+        for key in windows:
+            window = windows[key]
+            # Create second window in session
+            call([
+                'tmux',
+                'new-window',
+                '-t',
+                session,
+                '-n',
+                window['name']
+            ])
+            # Start htop in session window
+            call([
+                'tmux',
+                'send-keys',
+                '-t',
+                window['name'],
+                window['command'],
+                'C-m'
+            ])
