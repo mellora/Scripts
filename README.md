@@ -1,2 +1,2 @@
 # Test_Scripts
-Scripts that are for testing purposes.
+Scripts that I have written as a testing ground for automating tasks.
