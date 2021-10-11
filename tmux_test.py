@@ -21,29 +21,35 @@ windows = {
 }
 
 if __name__ == '__main__':
-    # Check if Session Exists
-    # Gets a list of tmux sessions open and
-    # then sends it over a pipe to be read.
+    # Check if Session Exists and pipes the output
     session_list = Popen(
         ['tmux', 'list-sessions'],
-        stderr=PIPE,
-        stdout=PIPE
+        stdout=PIPE,
+        stderr=PIPE
     )
-    # Gets the piped data and converts it from a byte string to a utf-8 string.
-    output_of_list = session_list.stdout.read().decode('utf-8')
-    # Splits string into list based on end of line character
-    output_slice_rows = output_of_list.splitlines()
-    # Loops through the lines in the list, splits each line into a list,
-    # gets the item at the first index, and strips the colon off of it.
-    output_first_args = []
-    for line_slice in output_slice_rows:
-        output_first_args.append(
-            line_slice.split(' ')[0].replace(':', '')
-        )
+    # Gets piped output from session list and runs the grep command
+    session_grep = Popen(
+        ['grep', session],
+        stdin=session_list.stdout,
+        stdout=PIPE,
+        stderr=PIPE
+    )
+
+    # Makes sure process closes
+    session_list.stdout.close()
+
+    # Allows output of commands to be used and closes the process
+    session_output, session_error = session_grep.communicate()
+
+    # Decodes output from a binary string to a utf-8 string.
+    # Allows an easier way to check if string is empty.
+    session_output_clean = session_output.decode('utf-8')
 
     # Checks to see if the session currently exists.
     # If it does not, then run code block.
-    if session not in output_first_args:
+    # The variable will be equal to an empty string if session
+    # does not exist at time of execution.
+    if session_output_clean == "":
         # Start new Session with specified name
         call([
             'tmux',
