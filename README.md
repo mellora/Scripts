@@ -1,2 +1,2 @@
-# Test_Scripts
-Scripts that I have written as a testing ground for automating tasks.
+# Test Scripts
+Repository  comprized of miscellaneous scripts I have written for simple tasks and testing purposes.
