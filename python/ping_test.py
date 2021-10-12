@@ -12,9 +12,10 @@ number_of_pings = 4
 interface = interfaces['wireless']
 
 if __name__ == '__main__':
-    print("**************************************************")
-    print(f'**  From {interface}:')
-    print("**************************************************")
+    print('')
+    print('**************************************************')
+    print(f'***  From {interface}:')
+    print('**************************************************')
     call([
         'ping',
         '-c',
@@ -23,3 +24,4 @@ if __name__ == '__main__':
         interface,
         ping_host
     ])
+    print('')
